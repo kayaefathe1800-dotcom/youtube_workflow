@@ -28,7 +28,12 @@ export async function resizeImageToBase64(file: File): Promise<string> {
       const canvas = document.createElement('canvas')
       canvas.width = Math.round(img.width * ratio)
       canvas.height = Math.round(img.height * ratio)
-      const ctx = canvas.getContext('2d')!
+      const ctx = canvas.getContext('2d')
+      if (!ctx) {
+        URL.revokeObjectURL(url)
+        reject(new Error('Failed to get 2D canvas context'))
+        return
+      }
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
       URL.revokeObjectURL(url)
       resolve(canvas.toDataURL('image/jpeg', 0.8))
