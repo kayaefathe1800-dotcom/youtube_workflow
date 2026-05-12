@@ -15,6 +15,7 @@ import { CountdownTimer } from '@/components/CountdownTimer'
 import { STAGES } from '@/types/video'
 import type { Video, Stage, WorkSession } from '@/types/video'
 import { resizeImageToBase64 } from '@/lib/utils'
+import { generateGoogleCalendarUrl } from '@/lib/exportUtils'
 
 type Props = {
   video?: Video
@@ -117,14 +118,38 @@ export function VideoModal({ video, open, onClose, onSave, onDelete, onWorkSessi
 
           <div>
             <Label htmlFor="publishDate">公開予定日</Label>
-            <Input id="publishDate" type="date" value={publishDate} onChange={(e) => setPublishDate(e.target.value)} />
+            <div className="flex gap-2 mt-1">
+              <Input
+                id="publishDate"
+                type="date"
+                value={publishDate}
+                onChange={(e) => setPublishDate(e.target.value)}
+                className="flex-1"
+              />
+              {publishDate && (
+                <a
+                  href={generateGoogleCalendarUrl(
+                    `📹 公開予定: ${title || '動画'}`,
+                    publishDate,
+                    youtubeUrl || ''
+                  )}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="shrink-0 flex items-center gap-1 text-xs px-3 py-2 rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 transition-colors whitespace-nowrap"
+                  title="Googleカレンダーに追加"
+                >
+                  <span>📅</span>
+                  <span className="hidden sm:inline">GCal</span>
+                </a>
+              )}
+            </div>
           </div>
 
           <div>
             <Label>ステージ別締切日</Label>
             <div className="space-y-2 mt-2">
               {STAGES.map((s) => (
-                <div key={s} className="flex items-center gap-3">
+                <div key={s} className="flex items-center gap-2">
                   <span className="text-xs text-gray-500 w-16 shrink-0 text-right">{s}</span>
                   <Input
                     type="date"
@@ -140,6 +165,21 @@ export function VideoModal({ video, open, onClose, onSave, onDelete, onWorkSessi
                     }}
                     className="flex-1 text-sm"
                   />
+                  {stageDueDates[s] && (
+                    <a
+                      href={generateGoogleCalendarUrl(
+                        `📋 ${s}締切: ${title || '動画'}`,
+                        stageDueDates[s]!,
+                        `動画「${title || ''}」の${s}ステージの締切日です`
+                      )}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="shrink-0 text-xs px-2 py-2 rounded-lg border border-gray-200 bg-white text-gray-500 hover:bg-gray-50 transition-colors"
+                      title="Googleカレンダーに追加"
+                    >
+                      📅
+                    </a>
+                  )}
                 </div>
               ))}
             </div>
