@@ -68,7 +68,7 @@ export function ReportCharts({ videos }: Props) {
                 cx="50%"
                 cy="50%"
                 outerRadius={70}
-                label={({ name, value }: { name: string; value: number }) => value > 0 ? `${name} ${value}` : ''}
+                label={({ name, value }: { name?: string; value?: number }) => (value ?? 0) > 0 ? `${name ?? ''} ${value}` : ''}
               >
                 {stageData.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
               </Pie>
