@@ -14,7 +14,7 @@ function DaysUntilBadge({ publishDate }: { publishDate?: string }) {
   if (days === null) return null
   const color =
     days < 0
-      ? 'bg-red-100 text-red-700'
+      ? 'bg-gray-100 text-gray-500'
       : days <= 7
       ? 'bg-red-100 text-red-700'
       : days <= 14
@@ -36,7 +36,10 @@ export function VideoCard({ video, onClick }: Props) {
 
   return (
     <div
+      role="button"
+      tabIndex={0}
       onClick={onClick}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onClick() }}
       className="bg-white border border-gray-200 rounded-lg px-4 py-3 flex items-center gap-3 cursor-pointer hover:border-gray-300 hover:shadow-sm transition-all"
     >
       {/* サムネイル or アイコン */}

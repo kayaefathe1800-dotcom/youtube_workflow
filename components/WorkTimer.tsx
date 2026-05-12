@@ -22,6 +22,7 @@ export function WorkTimer({ currentStage, onSessionComplete }: Props) {
   }, [])
 
   function start() {
+    if (intervalRef.current) clearInterval(intervalRef.current)
     startRef.current = Date.now() - elapsed * 1000
     intervalRef.current = setInterval(() => {
       setElapsed(Math.floor((Date.now() - startRef.current!) / 1000))
@@ -31,11 +32,15 @@ export function WorkTimer({ currentStage, onSessionComplete }: Props) {
 
   function stop() {
     if (intervalRef.current) clearInterval(intervalRef.current)
+    intervalRef.current = null
     setRunning(false)
-    if (elapsed > 0) {
-      onSessionComplete(elapsed)
-      setElapsed(0)
+    const finalElapsed = startRef.current !== null
+      ? Math.floor((Date.now() - startRef.current) / 1000)
+      : elapsed
+    if (finalElapsed > 0) {
+      onSessionComplete(finalElapsed)
     }
+    setElapsed(0)
   }
 
   const h = Math.floor(elapsed / 3600)

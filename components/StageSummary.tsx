@@ -18,6 +18,7 @@ export function StageSummary({ videos, activeStage, onStageClick }: Props) {
         const isActive = activeStage === stage
         return (
           <button
+            type="button"
             key={stage}
             onClick={() => onStageClick(isActive ? null : stage)}
             className={`rounded-lg p-3 text-center border transition-all ${
