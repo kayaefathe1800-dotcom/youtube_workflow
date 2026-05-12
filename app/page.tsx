@@ -55,8 +55,13 @@ export default function DashboardPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-xl font-bold text-gray-900">ダッシュボード</h1>
-        <Button onClick={openCreate}>＋ 新規動画を追加</Button>
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">ダッシュボード</h1>
+          <p className="text-sm text-gray-400 mt-0.5">動画制作の進捗を管理する</p>
+        </div>
+        <Button onClick={openCreate} className="bg-red-500 hover:bg-red-600 text-white rounded-lg px-4 py-2 text-sm font-semibold shadow-sm">
+          ＋ 新規動画を追加
+        </Button>
       </div>
 
       <StageSummary videos={videos} activeStage={activeStage} onStageClick={setActiveStage} />

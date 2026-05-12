@@ -31,16 +31,17 @@ export function VideoList({ videos, activeStage, onVideoClick }: Props) {
 
   return (
     <div>
+      {/* 検索・フィルター */}
       <div className="flex gap-2 mb-4">
         <Input
           placeholder="タイトルで検索..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="flex-1"
+          className="flex-1 bg-white"
         />
         {!activeStage && (
           <Select value={stageFilter} onValueChange={(v) => setStageFilter(v ?? 'all')}>
-            <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="w-44 bg-white"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">すべてのステージ</SelectItem>
               {STAGES.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
@@ -49,9 +50,18 @@ export function VideoList({ videos, activeStage, onVideoClick }: Props) {
         )}
       </div>
 
+      {/* リスト or 空状態 */}
       {filtered.length === 0 ? (
-        <div className="text-center py-16 text-gray-400 text-sm">
-          動画がありません
+        <div className="text-center py-20">
+          <div className="text-5xl mb-4">🎬</div>
+          <p className="text-gray-600 font-semibold text-base mb-1">
+            {videos.length === 0 ? 'まだ動画がありません' : '該当する動画がありません'}
+          </p>
+          <p className="text-gray-400 text-sm">
+            {videos.length === 0
+              ? '右上の「＋ 新規動画を追加」から最初の動画を登録しましょう'
+              : '検索条件やフィルターを変えてみてください'}
+          </p>
         </div>
       ) : (
         <div className="flex flex-col gap-2">

@@ -13,20 +13,27 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ja">
-      <body className={inter.className}>
-        <div className="min-h-screen bg-gray-50">
-          <nav className="bg-zinc-900 text-white px-6 py-3 flex items-center gap-6">
-            <Link href="/" className="font-bold text-base flex items-center gap-2">
-              📹 YT進捗管理
+      <body className={`${inter.className} bg-gray-50 min-h-screen`}>
+        <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
+          <div className="max-w-5xl mx-auto px-6 flex items-center h-14">
+            <Link href="/" className="flex items-center gap-2 font-bold text-gray-900 mr-8 shrink-0">
+              <span className="w-7 h-7 bg-red-500 rounded-lg flex items-center justify-center text-white text-xs font-black">▶</span>
+              YT進捗管理
             </Link>
-            <div className="flex gap-4 text-sm">
-              <Link href="/" className="text-gray-300 hover:text-white transition-colors">ダッシュボード</Link>
-              <Link href="/calendar" className="text-gray-300 hover:text-white transition-colors">カレンダー</Link>
-              <Link href="/report" className="text-gray-300 hover:text-white transition-colors">レポート</Link>
+            <div className="flex gap-0.5">
+              <Link href="/" className="text-sm px-3 py-1.5 rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors font-medium">
+                ダッシュボード
+              </Link>
+              <Link href="/calendar" className="text-sm px-3 py-1.5 rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors font-medium">
+                カレンダー
+              </Link>
+              <Link href="/report" className="text-sm px-3 py-1.5 rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors font-medium">
+                レポート
+              </Link>
             </div>
-          </nav>
-          <main className="max-w-4xl mx-auto px-4 py-6">{children}</main>
-        </div>
+          </div>
+        </nav>
+        <main className="max-w-5xl mx-auto px-6 py-8">{children}</main>
       </body>
     </html>
   )
