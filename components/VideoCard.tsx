@@ -14,7 +14,7 @@ function DaysUntilBadge({ publishDate }: { publishDate?: string }) {
   if (days === null) return null
   const color =
     days < 0
-      ? 'bg-gray-100 text-gray-500'
+      ? 'bg-red-100 text-red-700'
       : days <= 7
       ? 'bg-red-100 text-red-700'
       : days <= 14
