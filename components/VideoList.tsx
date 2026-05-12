@@ -1,6 +1,20 @@
 'use client'
 
 import { useState, useMemo } from 'react'
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from '@dnd-kit/core'
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  arrayMove,
+} from '@dnd-kit/sortable'
 import { Input } from '@/components/ui/input'
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
@@ -13,9 +27,10 @@ type Props = {
   videos: Video[]
   activeStage: string | null
   onVideoClick: (video: Video) => void
+  onReorder: (orderedIds: string[]) => void
 }
 
-export function VideoList({ videos, activeStage, onVideoClick }: Props) {
+export function VideoList({ videos, activeStage, onVideoClick, onReorder }: Props) {
   const [query, setQuery] = useState('')
   const [stageFilter, setStageFilter] = useState<string>('all')
 
@@ -28,6 +43,29 @@ export function VideoList({ videos, activeStage, onVideoClick }: Props) {
       return matchStage && matchQuery
     })
   }, [videos, activeStage, stageFilter, query])
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 8 } })
+  )
+
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event
+    if (!over || active.id === over.id) return
+    const oldIndex = filtered.findIndex((v) => v.id === active.id)
+    const newIndex = filtered.findIndex((v) => v.id === over.id)
+    if (oldIndex === -1 || newIndex === -1) return
+    const reordered = arrayMove(filtered, oldIndex, newIndex)
+    // Build new full order: non-filtered videos keep their relative order, filtered slots get the new order
+    const filteredIds = new Set(filtered.map((v) => v.id))
+    const allIds = videos.map((v) => v.id)
+    let reorderedIdx = 0
+    const newOrder = allIds.map((id) => {
+      if (filteredIds.has(id)) return reordered[reorderedIdx++].id
+      return id
+    })
+    onReorder(newOrder)
+  }
 
   return (
     <div>
@@ -64,11 +102,15 @@ export function VideoList({ videos, activeStage, onVideoClick }: Props) {
           </p>
         </div>
       ) : (
-        <div className="flex flex-col gap-2">
-          {filtered.map((v) => (
-            <VideoCard key={v.id} video={v} onClick={() => onVideoClick(v)} />
-          ))}
-        </div>
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+          <SortableContext items={filtered.map((v) => v.id)} strategy={verticalListSortingStrategy}>
+            <div className="flex flex-col gap-2">
+              {filtered.map((v) => (
+                <VideoCard key={v.id} video={v} onClick={() => onVideoClick(v)} />
+              ))}
+            </div>
+          </SortableContext>
+        </DndContext>
       )}
     </div>
   )

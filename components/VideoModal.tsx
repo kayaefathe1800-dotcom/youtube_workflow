@@ -35,6 +35,10 @@ export function VideoModal({ video, open, onClose, onSave, onDelete, onWorkSessi
   const [thumbnailBase64, setThumbnailBase64] = useState(video?.thumbnailBase64)
   const [uploading, setUploading] = useState(false)
   const [uploadError, setUploadError] = useState<string | null>(null)
+  const [stageDueDates, setStageDueDates] = useState<Partial<Record<Stage, string>>>(
+    video?.stageDueDates ?? {}
+  )
+  const [stageProgress, setStageProgress] = useState<number>(video?.stageProgress ?? 0)
 
   async function handleThumbnail(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
@@ -62,6 +66,8 @@ export function VideoModal({ video, open, onClose, onSave, onDelete, onWorkSessi
       youtubeUrl: youtubeUrl || undefined,
       tags,
       thumbnailBase64,
+      stageDueDates: Object.keys(stageDueDates).length > 0 ? stageDueDates : undefined,
+      stageProgress,
     })
     onClose()
   }
@@ -96,8 +102,53 @@ export function VideoModal({ video, open, onClose, onSave, onDelete, onWorkSessi
           </div>
 
           <div>
+            <Label>現在ステージの進捗</Label>
+            <div className="flex gap-1.5 mt-2">
+              {[0, 25, 50, 75, 100].map((p) => (
+                <button
+                  key={p}
+                  type="button"
+                  onClick={() => setStageProgress(p)}
+                  className={`flex-1 py-2 rounded-lg text-xs font-bold border transition-all ${
+                    stageProgress === p
+                      ? 'bg-gray-800 text-white border-gray-800'
+                      : 'bg-white text-gray-500 border-gray-200 hover:border-gray-400'
+                  }`}
+                >
+                  {p}%
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
             <Label htmlFor="publishDate">公開予定日</Label>
             <Input id="publishDate" type="date" value={publishDate} onChange={(e) => setPublishDate(e.target.value)} />
+          </div>
+
+          <div>
+            <Label>ステージ別締切日</Label>
+            <div className="space-y-2 mt-2">
+              {STAGES.map((s) => (
+                <div key={s} className="flex items-center gap-3">
+                  <span className="text-xs text-gray-500 w-16 shrink-0 text-right">{s}</span>
+                  <Input
+                    type="date"
+                    value={stageDueDates[s] ?? ''}
+                    onChange={(e) => {
+                      const val = e.target.value
+                      setStageDueDates((prev) => {
+                        const next = { ...prev }
+                        if (val) next[s] = val
+                        else delete next[s]
+                        return next
+                      })
+                    }}
+                    className="flex-1 text-sm"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
 
           <div>
