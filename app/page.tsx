@@ -6,10 +6,13 @@ import { StageSummary } from '@/components/StageSummary'
 import { VideoList } from '@/components/VideoList'
 import { VideoModal } from '@/components/VideoModal'
 import { useVideos } from '@/hooks/useVideos'
+import { TodayTasks } from '@/components/TodayTasks'
+import { useDeadlineNotifications } from '@/hooks/useNotifications'
 import type { Video, WorkSession } from '@/types/video'
 
 export default function DashboardPage() {
   const { videos, addVideo, updateVideo, deleteVideo, addWorkSession, reorderVideos } = useVideos()
+  useDeadlineNotifications(videos)
   const [activeStage, setActiveStage] = useState<string | null>(null)
   const [modalOpen, setModalOpen] = useState(false)
   const [selectedVideo, setSelectedVideo] = useState<Video | null>(null)
@@ -64,6 +67,7 @@ export default function DashboardPage() {
         </Button>
       </div>
 
+      <TodayTasks videos={videos} onVideoClick={openEdit} />
       <StageSummary videos={videos} activeStage={activeStage} onStageClick={setActiveStage} />
       <VideoList videos={videos} activeStage={activeStage} onVideoClick={openEdit} onReorder={reorderVideos} />
 

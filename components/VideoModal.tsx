@@ -11,7 +11,7 @@ import { Textarea } from '@/components/ui/textarea'
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select'
-import { WorkTimer } from '@/components/WorkTimer'
+import { CountdownTimer } from '@/components/CountdownTimer'
 import { STAGES } from '@/types/video'
 import type { Video, Stage, WorkSession } from '@/types/video'
 import { resizeImageToBase64 } from '@/lib/utils'
@@ -70,12 +70,6 @@ export function VideoModal({ video, open, onClose, onSave, onDelete, onWorkSessi
       stageProgress,
     })
     onClose()
-  }
-
-  function handleWorkSession(durationSeconds: number) {
-    if (onWorkSession) {
-      onWorkSession({ stage, startedAt: new Date().toISOString(), durationSeconds })
-    }
   }
 
   return (
@@ -177,14 +171,12 @@ export function VideoModal({ video, open, onClose, onSave, onDelete, onWorkSessi
             <Input id="youtubeUrl" value={youtubeUrl} onChange={(e) => setYoutubeUrl(e.target.value)} placeholder="https://youtu.be/..." />
           </div>
 
-          {video && onWorkSession && (
-            <div>
-              <Label>作業タイマー</Label>
-              <div className="mt-1">
-                <WorkTimer currentStage={stage} onSessionComplete={handleWorkSession} />
-              </div>
+          <div>
+            <Label>制限時間タイマー</Label>
+            <div className="mt-1">
+              <CountdownTimer />
             </div>
-          )}
+          </div>
         </div>
 
         <DialogFooter className="flex-col sm:flex-row gap-2 pt-2">
