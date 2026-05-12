@@ -9,7 +9,13 @@ export function useVideos() {
   const [videos, setVideos] = useState<Video[]>([])
 
   useEffect(() => {
-    setVideos(loadVideos())
+    const loaded = loadVideos()
+    // sortOrder未設定のデータにデフォルト値を付与
+    const normalized = loaded.map((v, i) => ({
+      ...v,
+      sortOrder: v.sortOrder ?? i,
+    }))
+    setVideos(normalized.sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)))
   }, [])
 
   const addVideo = useCallback((data: VideoFormData) => {
@@ -19,6 +25,7 @@ export function useVideos() {
         id: generateId(),
         ...data,
         workSessions: [],
+        sortOrder: prev.length,
         createdAt: now,
         updatedAt: now,
       }
@@ -65,5 +72,16 @@ export function useVideos() {
     })
   }, [])
 
-  return { videos, addVideo, updateVideo, deleteVideo, addWorkSession }
+  const reorderVideos = useCallback((orderedIds: string[]) => {
+    setVideos((prev) => {
+      const next = orderedIds.map((id, index) => {
+        const v = prev.find((v) => v.id === id)!
+        return { ...v, sortOrder: index }
+      })
+      saveVideos(next)
+      return next
+    })
+  }, [])
+
+  return { videos, addVideo, updateVideo, deleteVideo, addWorkSession, reorderVideos }
 }

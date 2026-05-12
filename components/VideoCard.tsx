@@ -1,7 +1,9 @@
 'use client'
 
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 import { getDaysUntil } from '@/lib/utils'
-import { STAGE_COLORS } from '@/types/video'
+import { STAGE_COLORS, STAGE_PROGRESS_COLORS } from '@/types/video'
 import type { Video, Stage } from '@/types/video'
 
 type Props = {
@@ -45,18 +47,33 @@ export function VideoCard({ video, onClick }: Props) {
   const totalHours = Math.floor(totalSeconds / 3600)
   const totalMinutes = Math.floor((totalSeconds % 3600) / 60)
 
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: video.id })
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  }
+
   return (
     <div
-      role="button"
-      tabIndex={0}
-      onClick={onClick}
-      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onClick() }}
+      ref={setNodeRef}
+      style={style}
       className={`
         bg-white rounded-xl shadow-sm border-l-4 ${STAGE_LEFT_BORDER[video.stage]}
         px-4 py-3.5 flex items-center gap-4
-        cursor-pointer hover:shadow-md hover:-translate-y-0.5 transition-all duration-150
+        hover:shadow-md hover:-translate-y-0.5 transition-all duration-150
       `}
     >
+      {/* ドラッグハンドル */}
+      <span
+        {...attributes}
+        {...listeners}
+        className="cursor-grab active:cursor-grabbing text-gray-300 hover:text-gray-500 px-1 touch-none flex-shrink-0 text-lg leading-none select-none"
+        aria-label="ドラッグして並び替え"
+      >
+        ⠿
+      </span>
+
       {/* サムネイル */}
       <div className={`w-11 h-11 rounded-lg flex-shrink-0 flex items-center justify-center text-xl overflow-hidden ${colors.bg}`}>
         {video.thumbnailBase64 ? (
@@ -67,8 +84,14 @@ export function VideoCard({ video, onClick }: Props) {
         )}
       </div>
 
-      {/* メイン */}
-      <div className="flex-1 min-w-0">
+      {/* メイン（クリック領域） */}
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={onClick}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onClick() }}
+        className="flex-1 min-w-0 cursor-pointer"
+      >
         <div className="font-semibold text-gray-900 text-sm truncate mb-1.5">
           {video.title}
         </div>
@@ -79,6 +102,11 @@ export function VideoCard({ video, onClick }: Props) {
             </span>
           )}
           <DaysUntilBadge publishDate={video.publishDate} />
+          {video.stageDueDates?.[video.stage] && (
+            <span className="text-xs text-gray-400">
+              🗓 {video.stageDueDates[video.stage]!.replace(/-/g, '/')}
+            </span>
+          )}
           {video.tags.slice(0, 3).map((tag) => (
             <span key={tag} className="text-xs text-gray-400">#{tag}</span>
           ))}
@@ -87,6 +115,13 @@ export function VideoCard({ video, onClick }: Props) {
               ⏱ {totalHours > 0 ? `${totalHours}h ` : ''}{totalMinutes}m
             </span>
           )}
+        </div>
+        {/* プログレスバー */}
+        <div className="mt-2 w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+          <div
+            className={`h-full rounded-full transition-all duration-300 ${STAGE_PROGRESS_COLORS[video.stage]}`}
+            style={{ width: `${video.stageProgress ?? 0}%` }}
+          />
         </div>
       </div>
 

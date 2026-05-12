@@ -21,7 +21,7 @@ export function StageSummary({ videos, activeStage, onStageClick }: Props) {
   const total = videos.length
 
   return (
-    <div className="grid grid-cols-5 gap-3 mb-6">
+    <div className="flex overflow-x-auto gap-3 mb-6 pb-1 sm:grid sm:grid-cols-5 sm:overflow-visible sm:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0">
       {STAGES.map((stage) => {
         const count = videos.filter((v) => v.stage === stage).length
         const colors = STAGE_COLORS[stage]
@@ -34,7 +34,7 @@ export function StageSummary({ videos, activeStage, onStageClick }: Props) {
             key={stage}
             onClick={() => onStageClick(isActive ? null : stage)}
             className={`
-              rounded-xl border-t-4 p-4 text-center transition-all duration-150 shadow-sm
+              rounded-xl border-t-4 p-3 sm:p-4 text-center transition-all duration-150 shadow-sm min-w-[100px] sm:min-w-0 shrink-0 sm:shrink
               ${STAGE_TOP_BORDER[stage]}
               ${isActive
                 ? `${colors.bg} shadow-md scale-[1.03]`

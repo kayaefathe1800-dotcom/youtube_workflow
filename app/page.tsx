@@ -9,7 +9,7 @@ import { useVideos } from '@/hooks/useVideos'
 import type { Video, WorkSession } from '@/types/video'
 
 export default function DashboardPage() {
-  const { videos, addVideo, updateVideo, deleteVideo, addWorkSession } = useVideos()
+  const { videos, addVideo, updateVideo, deleteVideo, addWorkSession, reorderVideos } = useVideos()
   const [activeStage, setActiveStage] = useState<string | null>(null)
   const [modalOpen, setModalOpen] = useState(false)
   const [selectedVideo, setSelectedVideo] = useState<Video | null>(null)
@@ -56,16 +56,16 @@ export default function DashboardPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">ダッシュボード</h1>
-          <p className="text-sm text-gray-400 mt-0.5">動画制作の進捗を管理する</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">ダッシュボード</h1>
+          <p className="text-xs sm:text-sm text-gray-400 mt-0.5">動画制作の進捗を管理する</p>
         </div>
-        <Button onClick={openCreate} className="bg-red-500 hover:bg-red-600 text-white rounded-lg px-4 py-2 text-sm font-semibold shadow-sm">
-          ＋ 新規動画を追加
+        <Button onClick={openCreate} className="bg-red-500 hover:bg-red-600 text-white rounded-lg px-3 py-2 sm:px-4 text-sm font-semibold shadow-sm">
+          ＋ <span className="hidden sm:inline">新規動画を追加</span><span className="sm:hidden">追加</span>
         </Button>
       </div>
 
       <StageSummary videos={videos} activeStage={activeStage} onStageClick={setActiveStage} />
-      <VideoList videos={videos} activeStage={activeStage} onVideoClick={openEdit} />
+      <VideoList videos={videos} activeStage={activeStage} onVideoClick={openEdit} onReorder={reorderVideos} />
 
       <VideoModal
         key={selectedVideo?.id ?? 'new'}

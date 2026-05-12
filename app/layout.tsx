@@ -20,7 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <span className="w-7 h-7 bg-red-500 rounded-lg flex items-center justify-center text-white text-xs font-black">▶</span>
               YT進捗管理
             </Link>
-            <div className="flex gap-0.5">
+            <div className="hidden sm:flex gap-0.5">
               <Link href="/" className="text-sm px-3 py-1.5 rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors font-medium">
                 ダッシュボード
               </Link>
@@ -33,7 +33,25 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </div>
           </div>
         </nav>
-        <main className="max-w-5xl mx-auto px-6 py-8">{children}</main>
+        <main className="max-w-5xl mx-auto px-4 py-4 pb-24 sm:px-6 sm:py-8 sm:pb-8">{children}</main>
+
+        {/* Mobile bottom tab bar */}
+        <nav className="fixed bottom-0 left-0 right-0 z-50 sm:hidden bg-white border-t border-gray-200">
+          <div className="flex">
+            <Link href="/" className="flex-1 flex flex-col items-center py-3 gap-0.5 text-gray-500 hover:text-red-500 transition-colors">
+              <span className="text-xl">🏠</span>
+              <span className="text-[10px] font-medium">ダッシュボード</span>
+            </Link>
+            <Link href="/calendar" className="flex-1 flex flex-col items-center py-3 gap-0.5 text-gray-500 hover:text-red-500 transition-colors">
+              <span className="text-xl">📅</span>
+              <span className="text-[10px] font-medium">カレンダー</span>
+            </Link>
+            <Link href="/report" className="flex-1 flex flex-col items-center py-3 gap-0.5 text-gray-500 hover:text-red-500 transition-colors">
+              <span className="text-xl">📊</span>
+              <span className="text-[10px] font-medium">レポート</span>
+            </Link>
+          </div>
+        </nav>
       </body>
     </html>
   )
