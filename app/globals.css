@@ -93,3 +93,43 @@
     @apply font-sans;
   }
 }
+
+/* ===== Print styles ===== */
+@media print {
+  /* Hide navigation and UI chrome */
+  nav,
+  .no-print {
+    display: none !important;
+  }
+
+  /* Show print-only elements */
+  .print-only {
+    display: block !important;
+  }
+
+  /* Reset body background */
+  body {
+    background: white !important;
+  }
+
+  /* Reset main padding */
+  main {
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+
+  /* Ensure charts are visible */
+  #report-content {
+    display: block;
+  }
+
+  /* Page break control */
+  .recharts-wrapper {
+    break-inside: avoid;
+  }
+}
+
+/* Hidden by default, shown only when printing */
+.print-only {
+  display: none;
+}
