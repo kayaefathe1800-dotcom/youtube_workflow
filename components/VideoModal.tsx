@@ -74,7 +74,7 @@ export function VideoModal({ video, open, onClose, onSave, onDelete, onWorkSessi
 
   return (
     <Dialog open={open} onOpenChange={(o) => { if (!o) onClose() }}>
-      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto bg-white">
         <DialogHeader>
           <DialogTitle>{video ? '動画を編集' : '新規動画を追加'}</DialogTitle>
         </DialogHeader>
