@@ -34,14 +34,18 @@ export function VideoModal({ video, open, onClose, onSave, onDelete, onWorkSessi
   const [tagsInput, setTagsInput] = useState(video?.tags.join(', ') ?? '')
   const [thumbnailBase64, setThumbnailBase64] = useState(video?.thumbnailBase64)
   const [uploading, setUploading] = useState(false)
+  const [uploadError, setUploadError] = useState<string | null>(null)
 
   async function handleThumbnail(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
     setUploading(true)
+    setUploadError(null)
     try {
       const base64 = await resizeImageToBase64(file)
       setThumbnailBase64(base64)
+    } catch {
+      setUploadError('画像の処理に失敗しました。別のファイルをお試しください。')
     } finally {
       setUploading(false)
     }
@@ -49,7 +53,7 @@ export function VideoModal({ video, open, onClose, onSave, onDelete, onWorkSessi
 
   function handleSave() {
     if (!title.trim()) return
-    const tags = tagsInput.split(',').map((t) => t.trim()).filter(Boolean)
+    const tags = Array.from(new Set(tagsInput.split(',').map((t) => t.trim()).filter(Boolean)))
     onSave({
       title: title.trim(),
       stage,
@@ -110,6 +114,7 @@ export function VideoModal({ video, open, onClose, onSave, onDelete, onWorkSessi
             <Label htmlFor="thumbnail">サムネイル画像</Label>
             <Input id="thumbnail" type="file" accept="image/*" onChange={handleThumbnail} disabled={uploading} />
             {uploading && <p className="text-xs text-gray-500 mt-1">処理中...</p>}
+            {uploadError && <p className="text-xs text-red-500 mt-1">{uploadError}</p>}
             {thumbnailBase64 && (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={thumbnailBase64} alt="サムネイルプレビュー" className="mt-2 h-24 rounded object-cover" />

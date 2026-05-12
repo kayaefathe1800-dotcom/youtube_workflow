@@ -63,6 +63,7 @@ export default function DashboardPage() {
       <VideoList videos={videos} activeStage={activeStage} onVideoClick={openEdit} />
 
       <VideoModal
+        key={selectedVideo?.id ?? 'new'}
         open={modalOpen}
         video={selectedVideo ?? undefined}
         onClose={() => setModalOpen(false)}
