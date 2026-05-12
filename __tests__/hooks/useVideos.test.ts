@@ -80,6 +80,9 @@ test('データはlocalStorageに永続化される', () => {
     result.current.addVideo({ title: '永続テスト', stage: '企画', tags: [] })
   })
   unmount()
-  const { result: result2 } = renderHook(() => useVideos())
-  expect(result2.current.videos[0].title).toBe('永続テスト')
+  let result2: ReturnType<typeof renderHook<ReturnType<typeof useVideos>, unknown>>
+  act(() => {
+    result2 = renderHook(() => useVideos())
+  })
+  expect(result2!.result.current.videos[0].title).toBe('永続テスト')
 })

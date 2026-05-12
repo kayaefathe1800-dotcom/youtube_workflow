@@ -13,15 +13,15 @@ export function useVideos() {
   }, [])
 
   const addVideo = useCallback((data: VideoFormData) => {
-    const now = new Date().toISOString()
-    const video: Video = {
-      id: generateId(),
-      ...data,
-      workSessions: [],
-      createdAt: now,
-      updatedAt: now,
-    }
     setVideos((prev) => {
+      const now = new Date().toISOString()
+      const video: Video = {
+        id: generateId(),
+        ...data,
+        workSessions: [],
+        createdAt: now,
+        updatedAt: now,
+      }
       const next = [...prev, video]
       saveVideos(next)
       return next
