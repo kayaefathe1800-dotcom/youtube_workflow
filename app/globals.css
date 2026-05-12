@@ -83,7 +83,8 @@
     --sidebar-ring: oklch(0.556 0 0);
   }
   * {
-    @apply border-border outline-ring/50;
+    border-color: hsl(var(--border, 214.3 31.8% 91.4%));
+    outline-color: hsl(var(--ring, 215 20.2% 65.1%) / 0.5);
   }
   body {
     @apply bg-background text-foreground;

@@ -39,7 +39,7 @@ export function VideoList({ videos, activeStage, onVideoClick }: Props) {
           className="flex-1"
         />
         {!activeStage && (
-          <Select value={stageFilter} onValueChange={setStageFilter}>
+          <Select value={stageFilter} onValueChange={(v) => setStageFilter(v ?? 'all')}>
             <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">すべてのステージ</SelectItem>
